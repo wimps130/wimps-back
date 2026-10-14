@@ -147,7 +147,7 @@ function normalizePlanRecord(plan, network, provider) {
     : DEFAULT_PROVIDER_FEE;
   const total = hasFee ? Number(plan.total ?? price + fee) : price + fee;
   const normalizedNetwork = normalizeNetwork(plan.network || network || "mtn");
-  const volumeLabel = [plan.volume, plan.bundle_size, plan.data_size, plan.name]
+  const volumeLabel = [plan.name, plan.bundle_size, plan.data_size, plan.volume]
     .find((value) => typeof value === "string" && /\d+(?:\.\d+)?\s*(?:gb|mb)/i.test(value));
   const rawVolume = provider === "remadata"
     ? plan.volume_gb ?? plan.capacity_gb ?? volumeLabel ?? plan.volumeInMB ?? plan.volume_mb ?? plan.capacity_mb ?? plan.volume ?? plan.capacity ?? plan.bundle_size ?? plan.data_size ?? plan.name

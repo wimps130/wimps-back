@@ -109,12 +109,12 @@ test('RemaData bundle listings without prices are enriched from its cost-price e
     assert.equal(url, 'https://example.test/api/bundles');
     return { data: [
       { network: 'mtn', name: '1GB', volume: '1.00GB', volumeInMB: 1024 },
-      { network: 'mtn', name: '2GB', volume: '2.00GB', volumeInMB: 2048 }
+      { network: 'mtn', name: '2GB', volume: '1.95GB', volumeInMB: 2000 }
     ] };
   };
   axios.post = async (url, body) => {
     if (url.endsWith('/get-cost-price')) {
-      assert.ok([1024, 2048].includes(body.volumeInMB));
+      assert.ok([1024, 2000].includes(body.volumeInMB));
       return { data: { status: 'success', api_price: '9.30' } };
     }
     assert.equal(url, 'https://example.test/api/buy-data');
@@ -125,7 +125,8 @@ test('RemaData bundle listings without prices are enriched from its cost-price e
   try {
     const plans = await getRemaDataPlans('mtn');
     assert.deepEqual(plans.map((plan) => plan.volumeGb), [1, 2]);
-    assert.deepEqual(plans.map((plan) => plan.providerVolumeInMB), [1024, 2048]);
+    assert.deepEqual(plans.map((plan) => plan.volume), ['1GB', '2GB']);
+    assert.deepEqual(plans.map((plan) => plan.providerVolumeInMB), [1024, 2000]);
     assert.deepEqual(plans.map((plan) => plan.price), [9.3, 9.3]);
     assert.ok(plans.every((plan) => plan.provider === 'remadata' && plan.available));
     await placeProviderOrder('remadata', {
